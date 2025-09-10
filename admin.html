@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Panel Admin</h1>
+    <h2>Monitoring Perjalanan</h2>
+    <ul id="tripList"><li>Memuat data...</li></ul>
+  </div>
+
+  <script type="module">
+    import { auth, onAuthStateChanged, db, ref, onValue, update, get } from './firebase.js';
+    import { badge, fmtDate, el } from './utils.js'; // ADDED: Import helpers
+
+    const list = document.getElementById('tripList');
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return window.location.href = 'index.html';
+      
+      const snap = await get(ref(db, 'users/'' + user.uid));
+      if (!snap.exists() || snap.val().role !== 'admin') {
+        alert('Akses ditolak. Hanya untuk admin.');
+        return window.location.href = 'index.html';
+      }
+      
+      loadAllTrips();
+    });
+
+    function approveTrip(id) {
+      update(ref(db, 'trips/' + id), { status: 'approved', approvedAt: Date.now() })
+        .then(() => alert('Perjalanan telah disetujui.'))
+        .catch(err => alert('Gagal menyetujui: ' + err.message));
+    }
+
+    function loadAllTrips() {
+      onValue(ref(db, 'trips'), (snapshot) => {
+        list.innerHTML = '';
+        if (!snapshot.exists()) {
+          list.innerHTML = '<li>Belum ada data perjalanan.</li>';
+          return;
+        }
+        snapshot.forEach(childSnapshot => {
+          const tripId = childSnapshot.key;
+          const tripData = childSnapshot.val();
+          
+          const li = el('li');
+          const statusBadge = badge(tripData.status);
+          
+          let content = `<strong>${tripData.asal} → ${tripData.tujuan}</strong> (${fmtDate(tripData.tanggal)})<br>
+                         Sopir: ${tripData.driverName} | Nopol: ${tripData.nopol}<br>
+                         Status: `;
+          li.innerHTML = content;
+          li.appendChild(statusBadge);
+
+          if (tripData.status === 'submitted') {
+            const approveButton = el('button', 'Setujui Perjalanan');
+            // SECURE: Added event listener instead of inline onclick
+            approveButton.addEventListener('click', () => approveTrip(tripId));
+            li.appendChild(approveButton);
+          }
+          list.appendChild(li);
+        });
+      });
+    }
+  </script>
+</body>
+</html>

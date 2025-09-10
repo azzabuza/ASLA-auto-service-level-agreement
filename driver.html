@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Driver Panel</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Panel Driver</h1>
+
+    <form id="tripForm">
+      <label>Nama Sopir</label>
+      <input id="driverName" type="text" required>
+      <label>No. Polisi</label>
+      <input id="nopol" type="text" required>
+      <label>Asal</label>
+      <input id="asal" type="text" required>
+      <label>Tujuan</label>
+      <input id="tujuan" type="text" required>
+      <label>Muatan</label>
+      <input id="muatan" type="text" required>
+      <label>Tanggal Keberangkatan</label>
+      <input id="tanggal" type="date" required>
+      <button type="submit">Kirim Data Perjalanan</button>
+    </form>
+
+    <h2>Status Perjalanan Saya</h2>
+    <ul id="tripList"><li>Memuat data...</li></ul>
+  </div>
+
+  <script type="module">
+    import { auth, onAuthStateChanged, db, ref, push, set, onValue, get } from './firebase.js';
+    import { badge, fmtDate, el } from './utils.js'; // ADDED: Import helpers
+
+    const tripForm = document.getElementById('tripForm');
+    const tripList = document.getElementById('tripList');
+    let currentUser = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return window.location.href = 'index.html';
+      currentUser = user;
+
+      const snap = await get(ref(db, 'users/' + currentUser.uid));
+      if (!snap.exists() || snap.val().role !== 'driver') {
+        return window.location.href = 'index.html';
+      }
+      loadMyTrips();
+    });
+
+    tripForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!currentUser) return alert('Anda belum login.');
+
+      const data = {
+        driverId: currentUser.uid,
+        driverName: tripForm.driverName.value,
+        nopol: tripForm.nopol.value,
+        asal: tripForm.asal.value,
+        tujuan: tripForm.tujuan.value,
+        muatan: tripForm.muatan.value,
+        tanggal: tripForm.tanggal.value,
+        status: 'submitted',
+        createdAt: Date.now()
+      };
+
+      await set(push(ref(db, 'trips')), data);
+      tripForm.reset();
+      alert('Data perjalanan berhasil dikirim dan sedang menunggu persetujuan admin.');
+    });
+
+    function loadMyTrips() {
+      onValue(ref(db, 'trips'), (snapshot) => {
+        tripList.innerHTML = '';
+        let hasTrips = false;
+        snapshot.forEach(childSnapshot => {
+          const tripData = childSnapshot.val();
+          if (tripData.driverId !== currentUser.uid) return;
+          hasTrips = true;
+
+          const li = el('li');
+          const statusBadge = badge(tripData.status);
+          
+          let content = `<strong>${tripData.asal} → ${tripData.tujuan}</strong> (${fmtDate(tripData.tanggal)})<br>Status: `;
+          li.innerHTML = content;
+          li.appendChild(statusBadge);
+
+          if (tripData.status === 'approved') {
+            const sjButton = el('button', 'Surat Jalan');
+            const invButton = el('button', 'Invoice');
+            sjButton.onclick = () => window.open(`surat-jalan.html?id=${childSnapshot.key}`);
+            invButton.onclick = () => window.open(`invoice.html?id=${childSnapshot.key}`);
+            li.append(sjButton, invButton);
+          }
+          tripList.appendChild(li);
+        });
+        if (!hasTrips) {
+          tripList.innerHTML = '<li>Belum ada data perjalanan.</li>';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

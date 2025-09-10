@@ -1,0 +1,263 @@
+/* General Body and Container Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6; /* Light gray-green background */
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align content to the top */
+    min-height: 100vh; /* Ensure it takes full viewport height */
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in element's total width and height */
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px; /* Max width for content */
+    margin-top: 20px; /* Space from the top of the page */
+    box-sizing: border-box;
+}
+
+.login-container {
+    max-width: 400px; /* Smaller max-width for login form */
+    margin-top: 100px; /* Center login form more vertically */
+}
+
+/* Headings */
+h1, h2 {
+    color: #2c3e50; /* Dark blue-gray */
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+h2 {
+    font-size: 1.8em;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-top: 40px;
+}
+
+/* Form Styles */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between form elements */
+}
+
+label {
+    font-weight: 500;
+    color: #555;
+    margin-bottom: -5px; /* Pull label closer to input */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box; /* Ensures padding doesn't increase width */
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus {
+    border-color: #007bff; /* Highlight on focus */
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+button {
+    background-color: #007bff; /* Primary blue */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* List Styles (Trip List) */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul li {
+    background-color: #fdfdfd;
+    border: 1px solid #e0e0e0;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap; /* Allow content to wrap on smaller screens */
+    align-items: center;
+    gap: 10px; /* Space between elements in the list item */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+ul li strong {
+    color: #34495e; /* Darker text for emphasis */
+    font-size: 1.1em;
+    flex-basis: 100%; /* Take full width on a new line */
+    margin-bottom: 5px;
+}
+
+ul li button {
+    padding: 8px 15px;
+    font-size: 0.9em;
+    margin-left: auto; /* Push buttons to the right for admin view */
+    flex-shrink: 0; /* Prevent buttons from shrinking */
+}
+
+/* Badges for Status */
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: white;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+
+.badge.warn {
+    background-color: #f39c12; /* Orange for 'Menunggu' */
+}
+
+.badge.success {
+    background-color: #28a745; /* Green for 'Disetujui' */
+}
+
+.badge.danger {
+    background-color: #dc3545; /* Red for 'Ditolak' */
+}
+
+/* Print Specific Styles (Surat Jalan, Invoice) */
+.print-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 40px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    font-size: 1.1em;
+    color: #333;
+}
+
+.print-container h1 {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.print-container h2 {
+    text-align: center;
+    color: #555;
+    font-size: 1.8em;
+    margin-top: 0;
+    margin-bottom: 30px;
+    border-bottom: none; /* Remove border for print headings */
+}
+
+.print-container p {
+    margin-bottom: 10px;
+    line-height: 1.8;
+}
+
+.print-container hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 30px 0;
+}
+
+@media print {
+    body {
+        background-color: #fff;
+        display: block;
+        padding: 0;
+    }
+    .container {
+        box-shadow: none;
+        margin: 0;
+        padding: 0;
+        max-width: 100%;
+        border-radius: 0;
+    }
+    button {
+        display: none; /* Hide buttons when printing */
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        margin-top: 10px;
+    }
+    .login-container {
+        margin-top: 50px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    h2 {
+        font-size: 1.5em;
+    }
+    ul li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    ul li button {
+        margin-left: 0; /* Align buttons left on small screens */
+        width: 100%; /* Full width buttons */
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    .container, .login-container, .print-container {
+        padding: 15px;
+    }
+    h1 {
+        font-size: 1.5em;
+    }
+    h2 {
+        font-size: 1.3em;
+    }
+    .badge {
+        font-size: 0.8em;
+        padding: 5px 10px;
+    }
+}
