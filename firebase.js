@@ -26,8 +26,7 @@ import {
 const firebaseConfig = {
   apiKey: "AIzaSyAwoRN_kHHL22UmY0XnpF-DP6rpQXvo4kA",
   authDomain: "auto-sla.firebaseapp.com",
-  databaseURL:
-    "https://auto-sla-default-rtdb.asia-southeast1.firebasedatabase.app/",
+  databaseURL: "https://auto-sla-default-rtdb.firebaseio.com/",
   projectId: "auto-sla",
   storageBucket: "auto-sla.appspot.com",
   messagingSenderId: "879738823109",
