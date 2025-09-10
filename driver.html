@@ -32,7 +32,7 @@
 
   <script type="module">
     import { auth, onAuthStateChanged, db, ref, push, set, onValue, get } from './firebase.js';
-    import { badge, fmtDate, el } from './utils.js'; // ADDED: Import helpers
+    import { badge, fmtDate, el } from './utils.js';
 
     const tripForm = document.getElementById('tripForm');
     const tripList = document.getElementById('tripList');
@@ -53,14 +53,15 @@
       e.preventDefault();
       if (!currentUser) return alert('Anda belum login.');
 
+      // ✅ Perbaikan: ambil value berdasarkan ID, bukan tripForm.namaField
       const data = {
         driverId: currentUser.uid,
-        driverName: tripForm.driverName.value,
-        nopol: tripForm.nopol.value,
-        asal: tripForm.asal.value,
-        tujuan: tripForm.tujuan.value,
-        muatan: tripForm.muatan.value,
-        tanggal: tripForm.tanggal.value,
+        driverName: document.getElementById('driverName').value,
+        nopol: document.getElementById('nopol').value,
+        asal: document.getElementById('asal').value,
+        tujuan: document.getElementById('tujuan').value,
+        muatan: document.getElementById('muatan').value,
+        tanggal: document.getElementById('tanggal').value,
         status: 'submitted',
         createdAt: Date.now()
       };
@@ -82,15 +83,19 @@
           const li = el('li');
           const statusBadge = badge(tripData.status);
           
-          let content = `<strong>${tripData.asal} → ${tripData.tujuan}</strong> (${fmtDate(tripData.tanggal)})<br>Status: `;
+          let content = `
+            <strong>${tripData.asal} → ${tripData.tujuan}</strong> 
+            (${fmtDate(tripData.tanggal)})<br>
+            Status: 
+          `;
           li.innerHTML = content;
           li.appendChild(statusBadge);
 
           if (tripData.status === 'approved') {
             const sjButton = el('button', 'Surat Jalan');
             const invButton = el('button', 'Invoice');
-            sjButton.onclick = () => window.open(`surat-jalan.html?id=${childSnapshot.key}`);
-            invButton.onclick = () => window.open(`invoice.html?id=${childSnapshot.key}`);
+            sjButton.onclick = () => window.open(\`surat-jalan.html?id=\${childSnapshot.key}\`);
+            invButton.onclick = () => window.open(\`invoice.html?id=\${childSnapshot.key}\`);
             li.append(sjButton, invButton);
           }
           tripList.appendChild(li);
