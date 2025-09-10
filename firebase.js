@@ -24,13 +24,14 @@ import {
   GANTI nilai firebaseConfig sesuai Project Settings Anda
 */
 const firebaseConfig = {
-  apiKey: "AIzaSyAwoRN_kHHL22UmY0XnpF-DP6rpQXvo4kA",
-  authDomain: "auto-sla.firebaseapp.com",
-  databaseURL: "https://auto-sla-default-rtdb.firebaseio.com/",
-  projectId: "auto-sla",
-  storageBucket: "auto-sla.appspot.com",
-  messagingSenderId: "879738823109",
-  appId: "1:879738823109:web:685001eac342c8dc016bac",
+  apiKey: "AIzaSyBBzAN3ybPGr_GQEkCCEn2Sh-jB8mejfZI",
+  authDomain: "docazza-3ab1a.firebaseapp.com",
+  databaseURL: "https://docazza-3ab1a-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "docazza-3ab1a",
+  storageBucket: "docazza-3ab1a.firebasestorage.app",
+  messagingSenderId: "863115710805",
+  appId: "1:863115710805:web:5090c3d713566070891fdc",
+  measurementId: "G-2SGBD9YQHZ"
 };
 
 const app = initializeApp(firebaseConfig);
