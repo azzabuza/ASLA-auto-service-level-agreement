@@ -13,16 +13,22 @@
     <form id="tripForm">
       <label>Nama Sopir</label>
       <input id="driverName" type="text" required>
+
       <label>No. Polisi</label>
       <input id="nopol" type="text" required>
+
       <label>Asal</label>
       <input id="asal" type="text" required>
+
       <label>Tujuan</label>
       <input id="tujuan" type="text" required>
+
       <label>Muatan</label>
       <input id="muatan" type="text" required>
+
       <label>Tanggal Keberangkatan</label>
       <input id="tanggal" type="date" required>
+
       <button type="submit">Kirim Data Perjalanan</button>
     </form>
 
@@ -53,7 +59,7 @@
       e.preventDefault();
       if (!currentUser) return alert('Anda belum login.');
 
-      // ✅ Perbaikan: ambil value berdasarkan ID, bukan tripForm.namaField
+      // ✅ Ambil value dengan getElementById agar tidak undefined
       const data = {
         driverId: currentUser.uid,
         driverName: document.getElementById('driverName').value,
@@ -75,6 +81,7 @@
       onValue(ref(db, 'trips'), (snapshot) => {
         tripList.innerHTML = '';
         let hasTrips = false;
+
         snapshot.forEach(childSnapshot => {
           const tripData = childSnapshot.val();
           if (tripData.driverId !== currentUser.uid) return;
@@ -94,12 +101,14 @@
           if (tripData.status === 'approved') {
             const sjButton = el('button', 'Surat Jalan');
             const invButton = el('button', 'Invoice');
-            sjButton.onclick = () => window.open(\`surat-jalan.html?id=\${childSnapshot.key}\`);
-            invButton.onclick = () => window.open(\`invoice.html?id=\${childSnapshot.key}\`);
+            // ✅ Pakai string biasa agar aman
+            sjButton.onclick = () => window.open('surat-jalan.html?id=' + childSnapshot.key);
+            invButton.onclick = () => window.open('invoice.html?id=' + childSnapshot.key);
             li.append(sjButton, invButton);
           }
           tripList.appendChild(li);
         });
+
         if (!hasTrips) {
           tripList.innerHTML = '<li>Belum ada data perjalanan.</li>';
         }
